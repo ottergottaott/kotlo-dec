@@ -1,7 +1,15 @@
 package adapters
-import org.objectweb.asm.*
-import org.objectweb.asm.Opcodes.ASM5
-import org.objectweb.asm.tree.*
+
+import adapters.insns.ConstantInsnNode
+import adapters.insns.StoreInsnNode
+import org.objectweb.asm.AnnotationVisitor
+import org.objectweb.asm.Handle
+import org.objectweb.asm.Label
+import org.objectweb.asm.Opcodes.*
+import org.objectweb.asm.TypePath
+import org.objectweb.asm.tree.InsnList
+import org.objectweb.asm.tree.MethodNode
+import org.objectweb.asm.tree.VarInsnNode
 
 class MethodVisitorAdapter(access: Int, name: String?,
                            desc: String?, signature: String?,
@@ -13,7 +21,11 @@ class MethodVisitorAdapter(access: Int, name: String?,
     }
 
     override fun visitVarInsn(opcode: Int, `var`: Int) {
-        super.visitVarInsn(opcode, `var`)
+        when (opcode) {
+            ISTORE, LSTORE, FSTORE,
+            DSTORE, ASTORE -> instructions.add(StoreInsnNode(VarInsnNode(opcode, `var`)))
+            else -> super.visitVarInsn(opcode, `var`)
+        }
     }
 
     override fun visitJumpInsn(opcode: Int, label: Label?) {
@@ -61,7 +73,14 @@ class MethodVisitorAdapter(access: Int, name: String?,
     }
 
     override fun visitInsn(opcode: Int) {
-        super.visitInsn(opcode)
+        when (opcode) {
+                ICONST_M1, ICONST_0, ICONST_1,
+                ICONST_2, ICONST_3, ICONST_4,
+                ICONST_5, LCONST_0, LCONST_1,
+                FCONST_0, FCONST_1, FCONST_2,
+                DCONST_0, DCONST_1 -> instructions.add(ConstantInsnNode(opcode))
+                else -> super.visitInsn(opcode)
+        }
     }
 
     override fun visitInsnAnnotation(typeRef: Int, typePath: TypePath?, desc: String?, visible: Boolean): AnnotationVisitor {
