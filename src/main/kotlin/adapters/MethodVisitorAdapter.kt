@@ -1,6 +1,8 @@
 package adapters
 
+import adapters.insns.ArithmeticInsnNode
 import adapters.insns.ConstantInsnNode
+import adapters.insns.ReturnInsnNode
 import adapters.insns.StoreInsnNode
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.Handle
@@ -79,6 +81,20 @@ class MethodVisitorAdapter(access: Int, name: String?,
                 ICONST_5, LCONST_0, LCONST_1,
                 FCONST_0, FCONST_1, FCONST_2,
                 DCONST_0, DCONST_1 -> instructions.add(ConstantInsnNode(opcode))
+                IADD,LADD,FADD,
+                DADD,ISUB,LSUB,
+                FSUB,DSUB,IMUL,
+                LMUL,FMUL,DMUL,
+                IDIV,LDIV,FDIV,
+                DDIV,IREM,LREM,
+                FREM,DREM,INEG,
+                LNEG,FNEG,DNEG,
+                ISHL,LSHL,ISHR,
+                LSHR,IUSHR,LUSHR,
+                IAND,LAND,IOR,
+                LOR,IXOR,LXOR -> instructions.add(ArithmeticInsnNode(opcode))
+                IRETURN,LRETURN,FRETURN,
+                DRETURN,ARETURN,RETURN -> instructions.add(ReturnInsnNode(opcode))
                 else -> super.visitInsn(opcode)
         }
     }
