@@ -1,11 +1,11 @@
 package ir
 
-import ir.transformer.TransformerInterface
+import ir.transformer.Transformer
 import ir.tree.nodes.TreeNode
 import org.objectweb.asm.tree.InsnList
 import debug.printInsnList
 
-class PrintTransformer: TransformerInterface {
+class PrintTransformer: Transformer {
     override fun visitIfNode(condition: TreeNode, body: TreeNode, elseBody: TreeNode): TreeNode {
         println("IF NODE")
         return super.visitIfNode(condition, body, elseBody)
