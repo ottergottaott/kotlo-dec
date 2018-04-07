@@ -1,15 +1,14 @@
-package adapters
+package bytecode.adapters
 
-import adapters.insns.ArithmeticInsnNode
-import adapters.insns.ConstantInsnNode
-import adapters.insns.ReturnInsnNode
-import adapters.insns.StoreInsnNode
+import bytecode.adapters.insns.ArithmeticInsnNode
+import bytecode.adapters.insns.ConstantInsnNode
+import bytecode.adapters.insns.ReturnInsnNode
+import bytecode.adapters.insns.StoreInsnNode
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.Handle
 import org.objectweb.asm.Label
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.TypePath
-import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.VarInsnNode
 

@@ -1,4 +1,4 @@
-package adapters
+package bytecode.adapters
 
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor

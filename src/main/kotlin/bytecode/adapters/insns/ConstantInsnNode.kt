@@ -1,11 +1,9 @@
-package adapters.insns
+package bytecode.adapters.insns
 
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.Type
 import org.objectweb.asm.tree.AbstractInsnNode
-import org.objectweb.asm.tree.InsnNode
-import org.objectweb.asm.tree.VarInsnNode
 
 class ConstantInsnNode(opcode: Int) : AbstractInsnNode(opcode) {
 

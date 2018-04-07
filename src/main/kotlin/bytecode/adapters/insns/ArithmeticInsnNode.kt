@@ -1,4 +1,4 @@
-package adapters.insns
+package bytecode.adapters.insns
 
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.tree.AbstractInsnNode
