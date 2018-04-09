@@ -1,9 +1,6 @@
 package bytecode.adapters
 
-import bytecode.adapters.insns.ArithmeticInsnNode
-import bytecode.adapters.insns.ConstantInsnNode
-import bytecode.adapters.insns.ReturnInsnNode
-import bytecode.adapters.insns.StoreInsnNode
+import bytecode.adapters.insns.*
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.Handle
 import org.objectweb.asm.Label
@@ -23,6 +20,11 @@ class MethodVisitorAdapter(access: Int, name: String?,
 
     override fun visitVarInsn(opcode: Int, `var`: Int) {
         when (opcode) {
+            ILOAD, LLOAD, FLOAD,
+            DLOAD, ALOAD, IALOAD,
+            LALOAD, FALOAD, DALOAD,
+            AALOAD, BALOAD, CALOAD,
+            SALOAD -> instructions.add(LoadInsnNode(VarInsnNode(opcode, `var`)))
             ISTORE, LSTORE, FSTORE,
             DSTORE, ASTORE -> instructions.add(StoreInsnNode(VarInsnNode(opcode, `var`)))
             else -> super.visitVarInsn(opcode, `var`)
@@ -31,6 +33,8 @@ class MethodVisitorAdapter(access: Int, name: String?,
 
     override fun visitJumpInsn(opcode: Int, label: Label?) {
         super.visitJumpInsn(opcode, label)
+//        println("Jump to $label")
+
     }
 
     override fun visitLdcInsn(cst: Any?) {
@@ -38,7 +42,10 @@ class MethodVisitorAdapter(access: Int, name: String?,
     }
 
     override fun visitIntInsn(opcode: Int, operand: Int) {
-        super.visitIntInsn(opcode, operand)
+        when (opcode) {
+            BIPUSH, SIPUSH -> instructions.add(PushInsnNode(opcode, operand))
+            else -> super.visitIntInsn(opcode, operand)
+        }
     }
 
     override fun visitTypeInsn(opcode: Int, type: String?) {
@@ -63,6 +70,7 @@ class MethodVisitorAdapter(access: Int, name: String?,
 
     override fun visitLabel(label: Label?) {
         super.visitLabel(label)
+//        println("Label $label")
     }
 
     override fun visitTryCatchAnnotation(typeRef: Int, typePath: TypePath?, desc: String?, visible: Boolean): AnnotationVisitor {
@@ -75,6 +83,9 @@ class MethodVisitorAdapter(access: Int, name: String?,
 
     override fun visitInsn(opcode: Int) {
         when (opcode) {
+                POP, POP2 -> instructions.add(PopInsnNode(opcode))
+                DUP, DUP_X1, DUP_X2,
+                DUP2, DUP2_X1, DUP2_X2 -> instructions.add(DupInsnNode(opcode))
                 ICONST_M1, ICONST_0, ICONST_1,
                 ICONST_2, ICONST_3, ICONST_4,
                 ICONST_5, LCONST_0, LCONST_1,

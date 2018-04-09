@@ -7,16 +7,30 @@ import org.objectweb.asm.util.Printer
 fun printInsnList(insnList: InsnList) {
     for (instruction in insnList) {
         when (instruction) {
+            is DupInsnNode -> {
+                println("${Printer.OPCODES[instruction.opcode]}")
+            }
+
+            is PopInsnNode -> {
+                println("${Printer.OPCODES[instruction.opcode]}")
+            }
+
+            is PushInsnNode -> {
+                println("${Printer.OPCODES[instruction.opcode]} " +
+                        "${instruction.operand}")
+            }
+
             is JumpInsnNode -> {
                 println("${Printer.OPCODES[instruction.opcode]} " +
-                        "${instruction.label}")
+                        "${instruction.label.label}")
             }
             is InsnNode -> {
                 println("${Printer.OPCODES[instruction.opcode]}  " +
                         "${instruction.type}")
             }
             is LabelNode -> {
-                println("${instruction.type} ${instruction.label}")
+                println("${instruction.label}") // ${instruction.label
+                // .offset}")
             }
 
             is LdcInsnNode -> {
@@ -37,12 +51,12 @@ fun printInsnList(insnList: InsnList) {
             }
 
             is LoadInsnNode -> {
-                println("${Printer.OPCODES[instruction.opcode]} ${Printer
-                        .TYPES[instruction.type]}")
+                println("${Printer.OPCODES[instruction.opcode]} " +
+                        "${instruction.getVariableNumber()}")
             }
             is StoreInsnNode -> {
                 println("${Printer.OPCODES[instruction.opcode]} " +
-                        "${Printer.TYPES[instruction.type]}")
+                        "${instruction.getVariableNumber()}")
             }
 
             is ReturnInsnNode -> {

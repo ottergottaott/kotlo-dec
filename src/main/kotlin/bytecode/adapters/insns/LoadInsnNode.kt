@@ -33,6 +33,13 @@ class LoadInsnNode : AbstractInsnNode {
         return insn.type
     }
 
+    fun getVariableNumber(): Int {
+        return when(insn) {
+            is VarInsnNode -> insn.`var`
+            else -> -1
+        }
+    }
+
     fun isFromArray(): Boolean {
         val opcode = insn.opcode
         val toLocalVariable = opcode == ISTORE ||
