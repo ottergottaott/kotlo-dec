@@ -3,11 +3,11 @@ package ir.tree.nodes
 import ir.transformer.Transformer
 import org.objectweb.asm.Label
 
-class IfNode(val condition: TreeNode, val body: TreeNode,
-             val elseBody: TreeNode?): TreeNode {
+class WhileNode(val condition: TreeNode,
+                val body: TreeNode) : TreeNode {
 
     override fun transform(transformer: Transformer): TreeNode {
-        return transformer.visitIfNode(condition, body, elseBody)
+        return transformer.visitWhileNode(condition, body)
     }
 
     override fun label(): Label {
