@@ -6,6 +6,7 @@ import org.objectweb.asm.Handle
 import org.objectweb.asm.Label
 import org.objectweb.asm.Opcodes.*
 import org.objectweb.asm.TypePath
+import org.objectweb.asm.tree.LabelNode
 import org.objectweb.asm.tree.MethodNode
 import org.objectweb.asm.tree.VarInsnNode
 
@@ -32,9 +33,17 @@ class MethodVisitorAdapter(access: Int, name: String?,
     }
 
     override fun visitJumpInsn(opcode: Int, label: Label?) {
-        super.visitJumpInsn(opcode, label)
-//        println("Jump to $label")
+        when (opcode) {
+            GOTO -> {
+                if (label!!.info !is LabelNode) {
+                    label.info = LabelNode()
+                }
+                instructions.add(GotoInsnNode(opcode, label.info as LabelNode))
 
+
+            }
+            else -> super.visitJumpInsn(opcode, label)
+        }
     }
 
     override fun visitLdcInsn(cst: Any?) {

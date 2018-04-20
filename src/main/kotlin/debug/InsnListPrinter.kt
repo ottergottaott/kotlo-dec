@@ -4,7 +4,8 @@ import bytecode.adapters.insns.*
 import org.objectweb.asm.tree.*
 import org.objectweb.asm.util.Printer
 
-fun printInsnList(insnList: InsnList) {
+
+fun printInsnList(insnList: List<AbstractInsnNode>) {
     for (instruction in insnList) {
         when (instruction) {
             is DupInsnNode -> {
@@ -20,6 +21,11 @@ fun printInsnList(insnList: InsnList) {
                         "${instruction.operand}")
             }
 
+            is GotoInsnNode -> {
+                println("${Printer.OPCODES[instruction.opcode]} " +
+                        "${instruction.label.label}")
+            }
+
             is JumpInsnNode -> {
                 println("${Printer.OPCODES[instruction.opcode]} " +
                         "${instruction.label.label}")
@@ -29,7 +35,7 @@ fun printInsnList(insnList: InsnList) {
                         "${instruction.type}")
             }
             is LabelNode -> {
-                println("${instruction.label}") // ${instruction.label
+                println("${instruction.label}") // ${instruction.target
                 // .offset}")
             }
 
