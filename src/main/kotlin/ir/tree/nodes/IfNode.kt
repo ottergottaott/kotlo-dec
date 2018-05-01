@@ -4,10 +4,10 @@ import ir.transformer.Transformer
 import org.objectweb.asm.Label
 
 class IfNode(val condition: TreeNode, val body: TreeNode,
-             val elseBody: TreeNode?): TreeNode {
+             val elseIfs: List<TreeNode> = listOf(), val elseBody: TreeNode? = null) : TreeNode {
 
     override fun transform(transformer: Transformer): TreeNode {
-        return transformer.visitIfNode(condition, body, elseBody)
+        return transformer.visitIfNode(condition, body, elseIfs, elseBody)
     }
 
     override fun label(): Label {

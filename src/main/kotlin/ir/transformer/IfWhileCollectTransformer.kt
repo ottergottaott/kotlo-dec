@@ -6,92 +6,81 @@ class IfWhileCollectTransformer : Transformer {
     override fun visitSequenceNode(nodes: List<TreeNode>): TreeNode {
 
         val transformedNodes: MutableList<TreeNode> = mutableListOf()
-//        nodes.forEachIndexed { idx, node ->
         var skipUntil = 0
-        for ((node, idx) in nodes.zip(0 until nodes.size)) {
-            if (idx < skipUntil) {
-                continue
-            }
+        loop@for ((node, idx) in nodes.zip(0 until nodes.size)) {
+            when {
+                idx < skipUntil -> continue@loop
+                node is ConditionNode -> {
+                    val containsLoop = containsLoopGotoInsns(node, nodes)
+                    if (containsLoop) {
+                        val (whileNode, finalIdx) = collectWhileNode(currentNode = node,
+                                nodes = nodes, conditionIdx = idx)
+                        transformedNodes.add(whileNode.transform(this))
 
-            if (node is ConditionNode) {
-                // find end of if body
-                val elseIdx = nodes.indexOfFirst { it -> it.label() == node.target }
-//                if (elseIdx < 0) {
-//                    transformedNodes.add(node)
-//                    continue
-//                }
-                val body = nodes.subList(idx, elseIdx)
-
-                // check if body contains external goto
-                val gotoInsns = findExternalGotoInsns(body)
-                // check if loop
-                val containsLoop = findLoopGotoInsns(node, nodes)
-
-                if (containsLoop) {
-                    // only while has more than one or only internal goto
-                    val (whileNode, finalIdx) = collectWhileNode(currentNode = node,
-                            nodes = nodes, conditionIdx = idx, elseIdx = elseIdx,
-                            externGotos = gotoInsns)
-                    transformedNodes.add(whileNode.transform(this))
-
-                    skipUntil = finalIdx
-                } else {
-                    val externGoto = if (gotoInsns.isEmpty()) {
-                        null
+                        skipUntil = finalIdx
                     } else {
-                        gotoInsns[0]
+                        val (ifNode, finalIdx) = collectIfNode(currentNode = node,
+                                nodes = nodes, conditionIdx = idx)
+
+                        transformedNodes.add(ifNode.transform(this))
+                        skipUntil = finalIdx
                     }
-                    val (ifNode, finalIdx) = collectIfNode(currentNode = node,
-                            nodes = nodes, conditionIdx = idx, elseIdx = elseIdx,
-                            externGoto = externGoto)
-
-                    transformedNodes.add(ifNode.transform(this))
-                    skipUntil = finalIdx
                 }
-
-
-            } else {
-                transformedNodes.add(node.transform(this))
-                println("DEBUG")
+                else -> transformedNodes.add(node.transform(this))
             }
         }
 
-        return if (transformedNodes.isEmpty()) {
-            SequenceNode(nodes)
-        } else {
-            SequenceNode(transformedNodes)
-        }
+        return SequenceNode(transformedNodes)
     }
 
     private fun collectIfNode(currentNode: ConditionNode, nodes: List<TreeNode>,
-                              conditionIdx: Int, elseIdx: Int,
-                              externGoto: GotoNode?): Pair<TreeNode, Int> {
+                              conditionIdx: Int): Pair<TreeNode, Int> {
+        var elseIdx = nodes.indexOfFirst { it -> it.label() == currentNode.target }
         var body = nodes.subList(conditionIdx + 1, elseIdx)
 
+        var elseIfs: MutableList<IfNode> = mutableListOf()
+        var nextElseIdx = elseIdx
+
+        while (nodes[nextElseIdx] is ConditionNode) {
+            val currentIfElseNode = nodes[nextElseIdx] as ConditionNode
+            elseIdx = nodes
+                    .subList(nextElseIdx, nodes.size)
+                    .indexOfFirst { it -> it.label() == currentIfElseNode.target }
+            val elseIfBody = nodes.subList(nextElseIdx + 1, elseIdx + nextElseIdx)
+            val ifToAppend = IfNode(currentIfElseNode, SequenceNode(elseIfBody))
+            elseIfs.add(ifToAppend)
+            nextElseIdx += elseIdx
+
+            // todo ???
+        }
+
+        // check if body contains external goto
+        val gotoInsns = findExternalGotoInsns(nodes.subList(conditionIdx + 1, nextElseIdx))
+
         var finalIdx = -1
-        if (externGoto != null) {
+        if (gotoInsns.isNotEmpty()) {
             finalIdx = nodes.indexOfFirst { it ->
-                it.label() == externGoto.target
+                it.label() == gotoInsns.last().target
             }
         }
 
         var elseBodyNode: TreeNode? = null
         if (finalIdx >= 0) {
-            body = nodes.subList(conditionIdx + 1, elseIdx)
-            elseBodyNode = SequenceNode(nodes.subList(elseIdx, finalIdx))
+//            body = nodes.subList(conditionIdx + 1, elseIdx)
+            elseBodyNode = SequenceNode(nodes.subList(nextElseIdx, finalIdx))
         } else {
             finalIdx = elseIdx
         }
         val bodyNode = SequenceNode(body)
-        val ifNode: TreeNode = IfNode(currentNode, bodyNode, elseBodyNode)
+        val ifNode: TreeNode = IfNode(currentNode, bodyNode, elseIfs, elseBodyNode)
 
         return Pair(ifNode, finalIdx)
     }
 
     private fun collectWhileNode(currentNode: ConditionNode,
-                                 nodes: List<TreeNode>, conditionIdx: Int, elseIdx: Int,
-                                 externGotos: List<GotoNode>): Pair<TreeNode, Int> {
+                                 nodes: List<TreeNode>, conditionIdx: Int): Pair<TreeNode, Int> {
         // todo collect breakpoints
+        var elseIdx = nodes.indexOfFirst { it -> it.label() == currentNode.target }
         val body = nodes.subList(conditionIdx + 1, elseIdx)
         val whileNode = WhileNode(currentNode, SequenceNode(body))
         return Pair(whileNode, elseIdx)
@@ -111,8 +100,8 @@ class IfWhileCollectTransformer : Transformer {
         return gotoInsns
     }
 
-    private fun findLoopGotoInsns(conditionNode: ConditionNode,
-                                  nodes: List<TreeNode>): Boolean {
+    private fun containsLoopGotoInsns(conditionNode: ConditionNode,
+                                      nodes: List<TreeNode>): Boolean {
         nodes.forEach { node ->
             if (node is GotoNode && node.target == conditionNode.label()) {
                 return true

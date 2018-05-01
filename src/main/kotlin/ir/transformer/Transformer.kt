@@ -1,20 +1,22 @@
 package ir.transformer
 
+import bytecode.adapters.insns.InsnNode
 import ir.tree.nodes.*
 import org.objectweb.asm.tree.AbstractInsnNode
 import java.util.*
 
 interface Transformer {
     fun visitIfNode(condition: TreeNode, body: TreeNode,
-                    elseBody: TreeNode?): TreeNode {
+                    elseIfs: List<TreeNode>, elseBody: TreeNode?): TreeNode {
         val newCondition = condition.transform(this)
-        val newElseBody = elseBody?.transform(this)
         val newBody = body.transform(this)
+        val newElseIfs: List<TreeNode> = elseIfs.map { it -> it.transform(this) }
+        val newElseBody = elseBody?.transform(this)
 
-        return IfNode(newCondition, newBody, newElseBody)
+        return IfNode(newCondition, newBody, newElseIfs, newElseBody)
     }
 
-    fun visitUndoneNode(insnList: List<AbstractInsnNode>): TreeNode {
+    fun visitUndoneNode(insnList: List<InsnNode>): TreeNode {
         return UndoneNode(insnList)
     }
 
@@ -28,7 +30,7 @@ interface Transformer {
         return SequenceNode(newNodes)
     }
 
-    fun visitConditionNode(insnList: List<AbstractInsnNode>): TreeNode {
+    fun visitConditionNode(insnList: List<InsnNode>): TreeNode {
         return ConditionNode(insnList)
     }
 

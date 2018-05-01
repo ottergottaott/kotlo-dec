@@ -1,21 +1,21 @@
 package ir.transformer
 
-import bytecode.adapters.insns.GotoInsnNode
+import bytecode.adapters.insns.*
 import ir.tree.nodes.*
-import org.objectweb.asm.tree.AbstractInsnNode
-import org.objectweb.asm.tree.JumpInsnNode
-import org.objectweb.asm.tree.LabelNode
+
+
 import java.util.*
 
 class JumpCollectTransformer : Transformer {
-    override fun visitUndoneNode(insnList: List<AbstractInsnNode>): TreeNode {
+    override fun visitUndoneNode(insnList: List<InsnNode>): TreeNode {
         // find indexes of jump or goto insns
         var jumpInsns: MutableList<Int> = mutableListOf(0, insnList.size - 1)
         insnList.forEachIndexed { idx, it ->
             if (it is JumpInsnNode) {
+                print("HERE")
                 val labelIdx = insnList
                         .subList(0, idx)
-                        .indexOfLast { it -> it is LabelNode }
+                        .indexOfLast { it -> it is LabelInsnNode }
                 if (labelIdx >= 0) {
                     jumpInsns.add(labelIdx)
                 }
@@ -28,7 +28,7 @@ class JumpCollectTransformer : Transformer {
                 // find goto label before goto
                 val gotoLabelIdx = insnList
                         .subList(0, idx)
-                        .indexOfLast { it -> it is LabelNode }
+                        .indexOfLast { it -> it is LabelInsnNode }
                 if (gotoLabelIdx >= 0) {
                     if (gotoLabelIdx in jumpInsns) {
                         jumpInsns.add(idx - 1)
@@ -40,7 +40,7 @@ class JumpCollectTransformer : Transformer {
                 // find idx of target targetted by goto instruction
                 // to break body of conditional
                 val labelIdx = insnList.indexOfFirst { lbl ->
-                    lbl is LabelNode && lbl.label == it.label.label
+                    lbl is LabelInsnNode && lbl.labelNode.label == it.label.labelNode.label
                 }
                 if (labelIdx >= 0) {
                     jumpInsns.add(labelIdx)
@@ -51,7 +51,7 @@ class JumpCollectTransformer : Transformer {
         val result: LinkedList<TreeNode> = LinkedList()
         jumpInsns = jumpInsns.distinct().sorted().toMutableList()
 
-        for ((prev, next) in jumpInsns.zipWithNext()) {
+        loop@ for ((prev, next) in jumpInsns.zipWithNext()) {
 
             // TODO Delete this awful trick
             var prevIdx = prev
@@ -66,7 +66,7 @@ class JumpCollectTransformer : Transformer {
                     if (result.isNotEmpty()) {
                         val prevNode = result.peek()
                         if (prevNode is ConditionNode
-                                && prevNode.target == nextInsn.label.label) {
+                                && prevNode.target == nextInsn.target.labelNode.label) {
                             result.pop()
                             blockInsnList = prevNode.insnList + blockInsnList
                         }
@@ -75,10 +75,10 @@ class JumpCollectTransformer : Transformer {
 
                 }
                 is GotoInsnNode -> {
-//                    val blockInsnList = insnList.subList(prevIdx, next)
-//                    result.push(UndoneNode(blockInsnList))
-                    if (insnList[prevIdx] !is LabelNode) {
-                        result.push(UndoneNode(insnList.subList(prevIdx, next)))
+                    if (insnList[prevIdx] !is LabelInsnNode) {
+                        if (prevIdx != next) {
+                            result.push(UndoneNode(insnList.subList(prevIdx, next)))
+                        }
                         result.push(GotoNode(listOf(insnList[next])))
 
                     } else {
@@ -86,10 +86,9 @@ class JumpCollectTransformer : Transformer {
                     }
                 }
                 else -> {
-//                    var nextIdx = next
-//                    if (prevIdx == next) {
-//                        nextIdx += 1
-//                    }
+                    if (prevIdx == next) {
+                        continue@loop
+                    }
                     result.push(UndoneNode(insnList.subList(prevIdx, next)))
                 }
             }

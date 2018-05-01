@@ -8,10 +8,12 @@ import java.util.*
 
 
 class ClassVisitorAdapter : ClassVisitor(Opcodes.ASM5), Opcodes {
-    var methodNodes: MutableList<MethodNode> = LinkedList()
+    var methodNodes: MutableList<MethodVisitorAdapter> = LinkedList()
 
     override fun visitMethod(access: Int, name: String?, desc: String?, signature: String?, exceptions: Array<out String>?): MethodVisitor {
+
         val mv = MethodVisitorAdapter(access, name, desc, signature, exceptions)
+
         methodNodes.add(mv)
         return mv
     }
