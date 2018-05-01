@@ -1,6 +1,6 @@
-package bytecode.adapters
+package bytecode.asm.adapters
 
-import bytecode.adapters.insns.*
+import bytecode.insns.*
 import org.objectweb.asm.Handle
 import org.objectweb.asm.Label
 import org.objectweb.asm.Opcodes.*
@@ -126,6 +126,10 @@ class MethodVisitorAdapter(access: Int, name: String?,
 
     override fun visitInsn(opcode: Int) {
         when (opcode) {
+            NOP -> {
+                myInsns.add(OpInsnNode(InsnNode.NOOP))
+            }
+
             POP -> {
                 myInsns.add(OpInsnNode(InsnNode.POP))
             }

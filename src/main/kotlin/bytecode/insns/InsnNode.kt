@@ -1,4 +1,4 @@
-package bytecode.adapters.insns
+package bytecode.insns
 
 abstract class InsnNode(val opcode: Int) {
     companion object {

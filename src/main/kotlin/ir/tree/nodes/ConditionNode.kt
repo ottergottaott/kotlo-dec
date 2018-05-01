@@ -1,9 +1,10 @@
 package ir.tree.nodes
 
-import bytecode.adapters.insns.*
-import ir.transformer.Transformer
+import bytecode.insns.InsnNode
+import bytecode.insns.JumpInsnNode
+import bytecode.insns.LabelInsnNode
+import ir.visitors.Transformer
 import org.objectweb.asm.Label
-import org.objectweb.asm.tree.AbstractInsnNode
 
 class ConditionNode(val insnList: List<InsnNode>) : TreeNode {
     // last instruction in condition node is always

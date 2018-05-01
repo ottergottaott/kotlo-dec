@@ -1,3 +1,3 @@
-package bytecode.adapters.insns
+package bytecode.insns
 
 class OpInsnNode(opcode: Int) : InsnNode(opcode)

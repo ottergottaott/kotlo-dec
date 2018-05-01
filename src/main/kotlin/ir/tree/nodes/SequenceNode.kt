@@ -1,6 +1,6 @@
 package ir.tree.nodes
 
-import ir.transformer.Transformer
+import ir.visitors.Transformer
 import org.objectweb.asm.Label
 
 class SequenceNode(val nodes: List<TreeNode>) : TreeNode {

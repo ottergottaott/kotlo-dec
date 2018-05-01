@@ -1,6 +1,9 @@
-package bytecode.adapters.insns
+package bytecode.insns
 
-class LoadInsnNode(opcode: Int, val local: Int) : InsnNode(opcode) {
+
+
+class StoreInsnNode(opcode: Int, val local: Int) : InsnNode(opcode)
+//{
 
 //    private val insn: AbstractInsnNode
 //
@@ -28,13 +31,13 @@ class LoadInsnNode(opcode: Int, val local: Int) : InsnNode(opcode) {
 //    }
 //
 //    fun getVariableNumber(): Int {
-//        return when(insn) {
+//        return when (insn) {
 //            is VarInsnNode -> insn.`var`
 //            else -> -1
 //        }
 //    }
 //
-//    fun isFromArray(): Boolean {
+//    fun isToArray(): Boolean {
 //        val opcode = insn.opcode
 //        val toLocalVariable = opcode == ISTORE ||
 //                opcode == LSTORE ||
@@ -44,4 +47,4 @@ class LoadInsnNode(opcode: Int, val local: Int) : InsnNode(opcode) {
 //
 //        return !toLocalVariable
 //    }
-}
+//}

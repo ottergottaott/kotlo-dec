@@ -1,4 +1,4 @@
-package bytecode.adapters.insns
+package bytecode.insns
 
 class DupInsnNode(opcode: Int) : InsnNode(opcode) {
 

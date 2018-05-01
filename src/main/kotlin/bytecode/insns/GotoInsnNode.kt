@@ -1,4 +1,4 @@
-package bytecode.adapters.insns
+package bytecode.insns
 
 class GotoInsnNode(opcode: Int, val label: LabelInsnNode) : InsnNode(opcode) {
 //    override fun accept(cv: MethodVisitor?) {

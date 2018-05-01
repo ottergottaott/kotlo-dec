@@ -1,12 +1,10 @@
 package ir.tree.nodes
 
-import bytecode.adapters.insns.GotoInsnNode
-import bytecode.adapters.insns.InsnNode
-import bytecode.adapters.insns.LabelInsnNode
-import ir.transformer.Transformer
+import bytecode.insns.GotoInsnNode
+import bytecode.insns.InsnNode
+import bytecode.insns.LabelInsnNode
+import ir.visitors.Transformer
 import org.objectweb.asm.Label
-import org.objectweb.asm.tree.AbstractInsnNode
-import org.objectweb.asm.tree.LabelNode
 
 class GotoNode(val insnList: List<InsnNode>) : TreeNode {
 

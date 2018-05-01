@@ -1,8 +1,7 @@
-package ir.transformer
+package ir.visitors
 
-import bytecode.adapters.insns.InsnNode
+import bytecode.insns.InsnNode
 import ir.tree.nodes.*
-import org.objectweb.asm.tree.AbstractInsnNode
 import java.util.*
 
 interface Transformer {

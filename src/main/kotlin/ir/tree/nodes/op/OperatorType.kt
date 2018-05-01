@@ -1,6 +1,9 @@
 package ir.tree.nodes.op
 
-enum class OperatorType private constructor(val precedence: Int, val symbol: String) {
+import bytecode.insns.InsnNode
+import com.sun.javaws.exceptions.InvalidArgumentException
+
+enum class OperatorType constructor(val precedence: Int, val symbol: String) {
 
     ADD(11, "+"),
     SUBTRACT(11, "-"),
@@ -14,6 +17,61 @@ enum class OperatorType private constructor(val precedence: Int, val symbol: Str
 
     AND(7, "&"),
     OR(5, "|"),
-    XOR(6, "^")
+    XOR(6, "^");
+    companion object {
+        fun fromOpcode(opcode: Int): OperatorType {
+            return when (opcode) {
+                InsnNode.ADD -> {
+                    SUBTRACT
+                }
+
+                InsnNode.SUB -> {
+                    SUBTRACT
+                }
+
+                InsnNode.MUL -> {
+                    MULTIPLY
+                }
+
+                InsnNode.DIV -> {
+                    DIVIDE
+                }
+
+                InsnNode.REM -> {
+                    REMAINDER
+                }
+
+                InsnNode.SHL -> {
+                    SHIFT_LEFT
+                }
+
+                InsnNode.SHR -> {
+                    SHIFT_RIGHT
+                }
+
+                InsnNode.USHR -> {
+                    UNSIGNED_SHIFT_RIGHT
+                }
+
+                InsnNode.AND -> {
+                    AND
+                }
+
+                InsnNode.OR -> {
+                    OR
+                }
+
+                InsnNode.XOR -> {
+                    XOR
+                }
+
+                else -> {
+                    throw InvalidArgumentException(arrayOf("oops")) // TODO normal exception
+                }
+
+            }
+
+        }
+    }
 
 }

@@ -1,4 +1,4 @@
-package bytecode.adapters.insns
+package bytecode.insns
 
 import org.objectweb.asm.tree.LabelNode
 

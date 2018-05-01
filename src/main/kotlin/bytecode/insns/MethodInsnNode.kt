@@ -1,4 +1,4 @@
-package bytecode.adapters.insns
+package bytecode.insns
 
 class MethodInsnNode(opcode: Int, val owner: String?,
                      val name: String?, val desc: String?, itf: Boolean): InsnNode(opcode){

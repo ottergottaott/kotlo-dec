@@ -1,3 +1,3 @@
-package bytecode.adapters.insns
+package bytecode.insns
 
 class LongInsnNode(opcode: Int, operand: Long): InsnNode(opcode)

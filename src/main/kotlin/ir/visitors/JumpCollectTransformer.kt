@@ -1,6 +1,9 @@
-package ir.transformer
+package ir.visitors
 
-import bytecode.adapters.insns.*
+import bytecode.insns.GotoInsnNode
+import bytecode.insns.InsnNode
+import bytecode.insns.JumpInsnNode
+import bytecode.insns.LabelInsnNode
 import ir.tree.nodes.*
 
 
@@ -12,7 +15,6 @@ class JumpCollectTransformer : Transformer {
         var jumpInsns: MutableList<Int> = mutableListOf(0, insnList.size - 1)
         insnList.forEachIndexed { idx, it ->
             if (it is JumpInsnNode) {
-                print("HERE")
                 val labelIdx = insnList
                         .subList(0, idx)
                         .indexOfLast { it -> it is LabelInsnNode }
