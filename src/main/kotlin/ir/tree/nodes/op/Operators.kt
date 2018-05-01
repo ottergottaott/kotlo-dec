@@ -78,4 +78,6 @@ enum class OperatorType(val precedence: Int, val symbol: String) {
 
 }
 
-class Operator(val left: Instruction, val op: OperatorType, val right: Instruction) : Instruction
+data class Operator(val left: Instruction, val op: OperatorType, val right: Instruction) : Instruction
+
+data class NegativeOperator(val ins: Instruction) : Instruction
