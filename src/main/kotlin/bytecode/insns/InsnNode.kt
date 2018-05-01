@@ -2,70 +2,70 @@ package bytecode.insns
 
 abstract class InsnNode(val opcode: Int) {
     companion object {
-        val LABEL = -1
+        const val LABEL = -1
 
-        val NOOP = 0
-        val PUSH = 1
-        val ICONST = 2
-        val LCONST = 3
-        val FCONST = 4
-        val DCONST = 5
+        const val NOOP = 0 // OpInsnNode
+        const val PUSH = 1 // -
+        const val ICONST = 2 // IntInsnNode
+        const val LCONST = 3 // LongInsnNode
+        const val FCONST = 4 // FloatInsnNode
+        const val DCONST = 5 // DoubleInsnNode
 
-        val LOCAL_LOAD = 10
-        val LOCAL_STORE = 11
-        val ARRAY_LOAD = 12
-        val ARRAY_STORE = 13
-        val GETFIELD = 14
-        val PUTFIELD = 15
-        val GETSTATIC = 16
-        val PUTSTATIC = 17
+        const val LOCAL_LOAD = 10 // LoadInsnNode
+        const val LOCAL_STORE = 11 // StoreInsnNode
+        const val ARRAY_LOAD = 12 // ??
+        const val ARRAY_STORE = 13 // ??
+        const val GETFIELD = 14 // ??
+        const val PUTFIELD = 15 // ??
+        const val GETSTATIC = 16 // ??
+        const val PUTSTATIC = 17 // ??
 
-        val INVOKE = 20
-        val INVOKESTATIC = 21
-        val INVOKEDYNAMIC = 22
-        val NEW = 23
-        val NEWARRAY = 24
-        val THROW = 25
-        val RETURN = 26
-        val ARETURN = 27
-        val CAST = 28
-        val INSTANCEOF = 29
+        const val INVOKE = 20 // MethodInsnNode
+        const val INVOKESTATIC = 21 // MethodInsnNode
+        const val INVOKEDYNAMIC = 22 // InvokeDynamicInsnNode
+        const val NEW = 23 // ??
+        const val NEWARRAY = 24 // ??
+        const val THROW = 25 // ??
+        const val RETURN = 26 // OpInsnNode
+        const val ARETURN = 27 // -
+        const val CAST = 28
+        const val INSTANCEOF = 29
 
-        val POP = 30
-        val DUP = 31
-        val DUP_X1 = 32
-        val DUP_X2 = 33
-        val DUP2 = 34
-        val DUP2_X1 = 35
-        val DUP2_X2 = 36
-        val SWAP = 37
+        const val POP = 30 // OpInsnNode
+        const val DUP = 31 // -
+        const val DUP_X1 = 32 // -
+        const val DUP_X2 = 33 // -
+        const val DUP2 = 34 // -
+        const val DUP2_X1 = 35 // -
+        const val DUP2_X2 = 36 // -
+        const val SWAP = 37 // -
 
-        val ADD = 40
-        val SUB = 41
-        val MUL = 42
-        val DIV = 43
-        val REM = 44
-        val NEG = 45
-        val SHL = 46
-        val SHR = 47
-        val USHR = 48
-        val AND = 49
-        val OR = 50
-        val XOR = 51
+        const val ADD = 40 // -
+        const val SUB = 41 // -
+        const val MUL = 42 // -
+        const val DIV = 43 // -
+        const val REM = 44 // -
+        const val NEG = 45 // -
+        const val SHL = 46 // -
+        const val SHR = 47 // -
+        const val USHR = 48 // -
+        const val AND = 49 // -
+        const val OR = 50 // -
+        const val XOR = 51 // -
 
-        val IINC = 60
-        val CMP = 61
-        val MULTINEWARRAY = 62
+        const val IINC = 60 // ??
+        const val CMP = 61 // JumpInsnNode
+        const val MULTINEWARRAY = 62 // ??
 
-        val IFEQ = 70
-        val IFNE = 71
-        val IF_CMPLT = 72
-        val IF_CMPGT = 73
-        val IF_CMPGE = 74
-        val IF_CMPLE = 75
-        val IF_CMPEQ = 76
-        val IF_CMPNE = 77
-        val GOTO = 78
-        val SWITCH = 79
+        const val IFEQ = 70 // JumpInsnNode
+        const val IFNE = 71 // -
+        const val IF_CMPLT = 72 // -
+        const val IF_CMPGT = 73 // -
+        const val IF_CMPGE = 74 // -
+        const val IF_CMPLE = 75 // -
+        const val IF_CMPEQ = 76 // -
+        const val IF_CMPNE = 77 // -
+        const val GOTO = 78 // GotoInsnNode
+        const val SWITCH = 79
     }
 }

@@ -251,6 +251,10 @@ class MethodVisitorAdapter(access: Int, name: String?,
                 myInsns.add(OpInsnNode(InsnNode.ARETURN))
             }
 
+            SWAP -> {
+                myInsns.add(OpInsnNode(InsnNode.SWAP))
+            }
+
             RETURN -> {
                 myInsns.add(OpInsnNode(InsnNode.RETURN))
             }
