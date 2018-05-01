@@ -35,6 +35,56 @@ fun buildStatement(node: UndoneNode, locals: Locals, stack: Deque<Instruction>):
                 stack.push(Operator(left, OperatorType.fromOpcode(it.opcode), right))
             }
 
+            InsnNode.DUP -> {
+                stack.push(stack.peek())
+            }
+            InsnNode.DUP_X1 -> {
+                val v1 = stack.pop()
+                val v2 = stack.pop()
+                stack.push(v1)
+                stack.push(v2)
+                stack.push(v1)
+            }
+            InsnNode.DUP_X2 -> {
+                val v1 = stack.pop()
+                val v2 = stack.pop()
+                val v3 = stack.pop()
+                stack.push(v1)
+                stack.push(v3)
+                stack.push(v2)
+                stack.push(v1)
+            }
+            InsnNode.DUP2 -> {
+                val v1 = stack.pop()
+                val v2 = stack.peek()
+                stack.push(v1)
+                stack.push(v2)
+                stack.push(v1)
+            }
+            InsnNode.DUP2_X1 -> {
+                val v1 = stack.pop()
+                val v2 = stack.pop()
+                val v3 = stack.pop()
+                stack.push(v2)
+                stack.push(v1)
+                stack.push(v3)
+                stack.push(v2)
+                stack.push(v1)
+
+            }
+            InsnNode.DUP2_X2 -> {
+                val v1 = stack.pop()
+                val v2 = stack.pop()
+                val v3 = stack.pop()
+                val v4 = stack.pop()
+                stack.push(v2)
+                stack.push(v1)
+                stack.push(v4)
+                stack.push(v3)
+                stack.push(v2)
+                stack.push(v1)
+            }
+
         }
 
         when(it) {
