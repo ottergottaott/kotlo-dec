@@ -9,9 +9,7 @@ import org.objectweb.asm.tree.MethodNode
 
 class MethodVisitorAdapter(access: Int, name: String?,
                            desc: String?, signature: String?,
-                           exceptions: Array<out String>?) :
-
-        MethodNode(ASM5, access, name, desc, signature, exceptions) {
+                           exceptions: Array<out String>?) : MethodNode(ASM5, access, name, desc, signature, exceptions) {
     val myInsns: MutableList<InsnNode> = ArrayList()
 
     override fun visitVarInsn(opcode: Int, `var`: Int) {
@@ -101,7 +99,7 @@ class MethodVisitorAdapter(access: Int, name: String?,
 
 
     override fun visitInvokeDynamicInsn(name: String?, desc: String?, bsm: Handle?, vararg bsmArgs: Any?) {
-        InvokeDynamicInsnNode(InsnNode.INVOKEDYNAMIC, name, desc, bsm, bsmArgs)
+        InvokeDynamicInsnNode(InsnNode.INVOKEDYNAMIC, name, desc, bsm, listOf(*bsmArgs))
     }
 
     override fun visitLabel(label: Label) {

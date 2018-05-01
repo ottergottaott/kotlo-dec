@@ -1,16 +1,15 @@
-import bytecode.asm.adapters.ClassVisitorAdapter
 import builders.buildStatement
-import bytecode.asm.adapters.MethodVisitorAdapter
-import ir.visitors.IfWhileCollectTransformer
-import ir.visitors.JumpCollectTransformer
+import bytecode.asm.adapters.ClassVisitorAdapter
 import ir.tree.IRTree
 import ir.tree.nodes.Locals
 import ir.tree.nodes.SequenceNode
 import ir.tree.nodes.UndoneNode
 import ir.tree.nodes.WhileNode
 import ir.tree.nodes.stmt.Instruction
-import org.objectweb.asm.tree.LocalVariableNode
+import ir.visitors.IfWhileCollectTransformer
+import ir.visitors.JumpCollectTransformer
 import org.objectweb.asm.ClassReader
+import org.objectweb.asm.tree.LocalVariableNode
 import java.io.FileInputStream
 import java.util.*
 

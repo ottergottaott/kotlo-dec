@@ -1,6 +1,8 @@
 package bytecode.insns
 
-abstract class InsnNode(val opcode: Int) {
+interface InsnNode {
+    val opcode: Int
+
     companion object {
         const val LABEL = -1
 
