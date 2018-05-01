@@ -29,10 +29,8 @@ class MethodVisitorAdapter(access: Int, name: String?,
     override fun visitJumpInsn(opcode: Int, label: Label?) {
         val target = LabelInsnNode(LabelNode(label))
 
-//        super.visitJumpInsn(opcode, label)
         when (opcode) {
             GOTO -> {
-
                 myInsns.add(GotoInsnNode(InsnNode.GOTO, target))
             }
             IFEQ -> {
@@ -102,7 +100,6 @@ class MethodVisitorAdapter(access: Int, name: String?,
     }
 
 
-
     override fun visitInvokeDynamicInsn(name: String?, desc: String?, bsm: Handle?, vararg bsmArgs: Any?) {
         InvokeDynamicInsnNode(InsnNode.INVOKEDYNAMIC, name, desc, bsm, bsmArgs)
     }
@@ -113,7 +110,7 @@ class MethodVisitorAdapter(access: Int, name: String?,
     }
 
     override fun visitMethodInsn(opcode: Int, owner: String?, name: String?, desc: String?, itf: Boolean) {
-        when(opcode) {
+        when (opcode) {
             INVOKESPECIAL, INVOKEVIRTUAL, INVOKEINTERFACE -> {
                 myInsns.add(MethodInsnNode(InsnNode.INVOKE, owner, name, desc, itf))
             }
@@ -138,9 +135,28 @@ class MethodVisitorAdapter(access: Int, name: String?,
                 myInsns.add(OpInsnNode(InsnNode.POP))
             }
 
-            DUP, DUP_X1, DUP_X2,
-            DUP2, DUP2_X1, DUP2_X2 -> {
-                myInsns.add(DupInsnNode(InsnNode.DUP)) // TODO MANY ARGS
+            DUP -> {
+                myInsns.add(OpInsnNode(InsnNode.DUP))
+            }
+
+            DUP_X1 -> {
+                myInsns.add(OpInsnNode(InsnNode.DUP_X1))
+            }
+
+            DUP_X2 -> {
+                myInsns.add(OpInsnNode(InsnNode.DUP_X2))
+            }
+            DUP2 -> {
+                myInsns.add(OpInsnNode(InsnNode.DUP2))
+            }
+
+            DUP2_X1 -> {
+                myInsns.add(OpInsnNode(InsnNode.DUP2_X1))
+
+            }
+
+            DUP2_X2 -> {
+                myInsns.add(OpInsnNode(InsnNode.DUP2_X2))
             }
             ICONST_M1 -> {
                 myInsns.add(IntInsnNode(InsnNode.ICONST, -1))
@@ -261,13 +277,4 @@ class MethodVisitorAdapter(access: Int, name: String?,
         super.visitIincInsn(`var`, increment)
     }
 
-
-//    // ???
-//    override fun visitLocalVariableAnnotation(typeRef: Int, typePath: TypePath?, start: Array<out Label>?, end: Array<out Label>?, index: IntArray?, desc: String?, visible: Boolean): AnnotationVisitor {
-//        return super.visitLocalVariableAnnotation(typeRef, typePath, start, end, index, desc, visible)
-//    }
-
-//    override fun visitMultiANewArrayInsn(desc: String?, dims: Int) {
-//        super.visitMultiANewArrayInsn(desc, dims)
-//    }
 }

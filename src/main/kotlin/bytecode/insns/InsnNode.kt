@@ -33,11 +33,11 @@ abstract class InsnNode(val opcode: Int) {
 
         val POP = 30
         val DUP = 31
-//        val DUP_X1 = 32
-//        val DUP_X2 = 33
-//        val DUP2 = 34
-//        val DUP2_X1 = 35
-//        val DUP2_X2 = 36
+        val DUP_X1 = 32
+        val DUP_X2 = 33
+        val DUP2 = 34
+        val DUP2_X1 = 35
+        val DUP2_X2 = 36
         val SWAP = 37
 
         val ADD = 40
