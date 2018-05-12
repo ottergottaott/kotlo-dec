@@ -36,9 +36,9 @@ class IfWhileCollectTransformer : Transformer {
     private fun collectIfNode(currentNode: ConditionNode, nodes: List<TreeNode>,
                               conditionIdx: Int): Pair<TreeNode, Int> {
         var elseIdx = nodes.indexOfFirst { it -> it.label() == currentNode.target }
-        var body = nodes.subList(conditionIdx + 1, elseIdx)
+        val body = nodes.subList(conditionIdx + 1, elseIdx)
 
-        var elseIfs: MutableList<IfNode> = mutableListOf()
+        val elseIfs: MutableList<IfNode> = mutableListOf()
         var nextElseIdx = elseIdx
 
         while (nodes[nextElseIdx] is ConditionNode) {
@@ -66,7 +66,6 @@ class IfWhileCollectTransformer : Transformer {
 
         var elseBodyNode: TreeNode? = null
         if (finalIdx >= 0) {
-//            body = nodes.subList(conditionIdx + 1, elseIdx)
             elseBodyNode = SequenceNode(nodes.subList(nextElseIdx, finalIdx))
         } else {
             finalIdx = elseIdx
