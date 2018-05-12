@@ -1,10 +1,10 @@
-package ir.tree
+package ast.tree
 
+import ast.tree.nodes.SequenceNode
+import ast.tree.nodes.TreeNode
+import ast.tree.nodes.UndoneNode
+import ast.visitors.Transformer
 import bytecode.insns.Instruction
-import ir.tree.nodes.SequenceNode
-import ir.tree.nodes.TreeNode
-import ir.tree.nodes.UndoneNode
-import ir.visitors.Transformer
 
 
 class IRTree {

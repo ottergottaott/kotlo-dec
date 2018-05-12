@@ -1,6 +1,6 @@
-package ir.tree.nodes
+package ast.tree.nodes
 
-import ir.visitors.Transformer
+import ast.visitors.Transformer
 import org.objectweb.asm.Label
 
 interface TreeNode {

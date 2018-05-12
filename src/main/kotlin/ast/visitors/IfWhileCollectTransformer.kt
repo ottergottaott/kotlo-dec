@@ -1,6 +1,6 @@
-package ir.visitors
+package ast.visitors
 
-import ir.tree.nodes.*
+import ast.tree.nodes.*
 
 class IfWhileCollectTransformer : Transformer {
     override fun visitSequenceNode(nodes: List<TreeNode>): TreeNode {

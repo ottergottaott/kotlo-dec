@@ -1,9 +1,9 @@
-package ir.tree.nodes
+package ast.tree.nodes
 
+import ast.visitors.Transformer
 import bytecode.insns.GotoInstruction
 import bytecode.insns.Instruction
 import bytecode.insns.LabelInstruction
-import ir.visitors.Transformer
 import org.objectweb.asm.Label
 
 class GotoNode(val insnList: List<Instruction>) : TreeNode {

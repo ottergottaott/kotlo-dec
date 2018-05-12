@@ -1,12 +1,12 @@
 package builders
 
+import ast.tree.nodes.ConditionNode
+import ast.tree.nodes.Locals
+import ast.tree.nodes.condition.CompareCondition
+import ast.tree.nodes.condition.CompareOperator
+import ast.tree.nodes.condition.Condition
+import ast.tree.nodes.stmt.Expression
 import bytecode.insns.Instruction
-import ir.tree.nodes.ConditionNode
-import ir.tree.nodes.Locals
-import ir.tree.nodes.condition.CompareCondition
-import ir.tree.nodes.condition.CompareOperator
-import ir.tree.nodes.condition.Condition
-import ir.tree.nodes.stmt.Expression
 import java.util.*
 
 

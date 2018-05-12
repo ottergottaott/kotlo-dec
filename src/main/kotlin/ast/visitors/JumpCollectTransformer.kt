@@ -1,12 +1,11 @@
-package ir.visitors
+package ast.visitors
 
+
+import ast.tree.nodes.*
 import bytecode.insns.GotoInstruction
 import bytecode.insns.Instruction
 import bytecode.insns.JumpInstruction
 import bytecode.insns.LabelInstruction
-import ir.tree.nodes.*
-
-
 import java.util.*
 
 class JumpCollectTransformer : Transformer {

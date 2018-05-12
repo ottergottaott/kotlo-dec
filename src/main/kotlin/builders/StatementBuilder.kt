@@ -1,12 +1,12 @@
 package builders
 
+import ast.tree.nodes.Locals
+import ast.tree.nodes.OpcodeList
+import ast.tree.nodes.op.NegativeOperator
+import ast.tree.nodes.op.Operator
+import ast.tree.nodes.op.OperatorType
+import ast.tree.nodes.stmt.*
 import bytecode.insns.*
-import ir.tree.nodes.Locals
-import ir.tree.nodes.OpcodeList
-import ir.tree.nodes.op.NegativeOperator
-import ir.tree.nodes.op.Operator
-import ir.tree.nodes.op.OperatorType
-import ir.tree.nodes.stmt.*
 import java.util.*
 
 fun buildStatement(insnList: OpcodeList, locals: Locals, stack: LinkedList<Expression>): List<Expression> {

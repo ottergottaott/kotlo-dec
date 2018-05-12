@@ -1,7 +1,7 @@
-package ir.visitors
+package ast.visitors
 
+import ast.tree.nodes.*
 import bytecode.insns.Instruction
-import ir.tree.nodes.*
 import java.util.*
 
 interface Transformer {

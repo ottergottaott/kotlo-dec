@@ -1,8 +1,8 @@
-package ir.tree.nodes.op
+package ast.tree.nodes.op
 
+import ast.tree.nodes.stmt.Expression
 import bytecode.insns.Instruction
 import com.sun.javaws.exceptions.InvalidArgumentException
-import ir.tree.nodes.stmt.Expression
 
 enum class OperatorType(val precedence: Int, val symbol: String) {
 

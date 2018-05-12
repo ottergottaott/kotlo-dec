@@ -1,8 +1,8 @@
-package ir.tree.nodes.condition
+package ast.tree.nodes.condition
 
+import ast.tree.nodes.stmt.Expression
 import bytecode.insns.Instruction
 import com.sun.javaws.exceptions.InvalidArgumentException
-import ir.tree.nodes.stmt.Expression
 
 
 data class AndCodition(val args: List<Condition>) : Condition

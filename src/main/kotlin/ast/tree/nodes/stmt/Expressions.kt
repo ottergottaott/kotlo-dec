@@ -1,6 +1,6 @@
-package ir.tree.nodes.stmt
+package ast.tree.nodes.stmt
 
-import ir.tree.nodes.Locals
+import ast.tree.nodes.Locals
 
 interface Expression
 
