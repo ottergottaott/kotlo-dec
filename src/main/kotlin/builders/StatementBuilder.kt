@@ -2,50 +2,56 @@ package builders
 
 import bytecode.insns.*
 import ir.tree.nodes.Locals
-import ir.tree.nodes.UndoneNode
+import ir.tree.nodes.OpcodeList
 import ir.tree.nodes.op.NegativeOperator
 import ir.tree.nodes.op.Operator
 import ir.tree.nodes.op.OperatorType
 import ir.tree.nodes.stmt.*
 import java.util.*
 
-fun buildStatement(node: UndoneNode, locals: Locals, stack: Deque<Instruction>): Deque<Instruction> {
+fun buildStatement(insnList: OpcodeList, locals: Locals, stack: LinkedList<Expression>): List<Expression> {
 
-    node.insnList.forEach { it ->
+    insnList.forEach { it ->
 
         // OpNode
         when (it.opcode) {
-            InsnNode.NOOP, InsnNode.LABEL -> {}
+            Instruction.NOOP, Instruction.LABEL -> {}
 
-            InsnNode.POP -> {
+            Instruction.POP -> {
                 stack.pop()
             }
 
-            InsnNode.NEG -> {
+            Instruction.NEG -> {
                 val expr = stack.pop()
                 stack.push(NegativeOperator(expr))
             }
 
-            InsnNode.ADD, InsnNode.SUB, InsnNode.DIV,
-            InsnNode.MUL, InsnNode.REM, InsnNode.SHR,
-            InsnNode.SHL, InsnNode.USHR, InsnNode.AND,
-            InsnNode.OR, InsnNode.XOR -> {
+            Instruction.CMP -> {
+                val right = stack.pop()
+                val left = stack.pop()
+                stack.push(NumberCompare(left, right))
+            }
+
+            Instruction.ADD, Instruction.SUB, Instruction.DIV,
+            Instruction.MUL, Instruction.REM, Instruction.SHR,
+            Instruction.SHL, Instruction.USHR, Instruction.AND,
+            Instruction.OR, Instruction.XOR -> {
                 val right = stack.pop()
                 val left = stack.pop()
                 stack.push(Operator(left, OperatorType.fromOpcode(it.opcode), right))
             }
 
-            InsnNode.DUP -> {
+            Instruction.DUP -> {
                 stack.push(stack.peek())
             }
-            InsnNode.DUP_X1 -> {
+            Instruction.DUP_X1 -> {
                 val v1 = stack.pop()
                 val v2 = stack.pop()
                 stack.push(v1)
                 stack.push(v2)
                 stack.push(v1)
             }
-            InsnNode.DUP_X2 -> {
+            Instruction.DUP_X2 -> {
                 val v1 = stack.pop()
                 val v2 = stack.pop()
                 val v3 = stack.pop()
@@ -54,14 +60,14 @@ fun buildStatement(node: UndoneNode, locals: Locals, stack: Deque<Instruction>):
                 stack.push(v2)
                 stack.push(v1)
             }
-            InsnNode.DUP2 -> {
+            Instruction.DUP2 -> {
                 val v1 = stack.pop()
                 val v2 = stack.peek()
                 stack.push(v1)
                 stack.push(v2)
                 stack.push(v1)
             }
-            InsnNode.DUP2_X1 -> {
+            Instruction.DUP2_X1 -> {
                 val v1 = stack.pop()
                 val v2 = stack.pop()
                 val v3 = stack.pop()
@@ -72,7 +78,7 @@ fun buildStatement(node: UndoneNode, locals: Locals, stack: Deque<Instruction>):
                 stack.push(v1)
 
             }
-            InsnNode.DUP2_X2 -> {
+            Instruction.DUP2_X2 -> {
                 val v1 = stack.pop()
                 val v2 = stack.pop()
                 val v3 = stack.pop()
@@ -88,40 +94,45 @@ fun buildStatement(node: UndoneNode, locals: Locals, stack: Deque<Instruction>):
         }
 
         when(it) {
-            is LoadInsnNode -> {
+            is LoadInstruction -> {
                 val local = locals.findLocal(it.local)
                 stack.push(LocalAccess(local))
             }
 
-            is StoreInsnNode -> {
+            is StoreInstruction -> {
                 val insn = stack.pop()
                 val local = locals.findLocal(it.local)
                 stack.push(AssignmentLocal(local, insn))
             }
-            is LdcInsnNode -> {
+            is LdcInstruction -> {
                 // TODO full class type
                 val objToPush = it.operand
                 stack.push(ObjConstant(objToPush))
             }
 
-            is IntInsnNode -> {
+            is IntInstruction -> {
                 // TODO ??? all int ops are const
                 val value = it.operand
                 stack.push(IntConstant(value))
             }
 
-            is DoubleInsnNode -> {
+            is DoubleInstruction -> {
                 val value = it.operand
                 stack.push(DoubleConstant(value))
             }
 
-            is FloatInsnNode -> {
+            is FloatInstruction -> {
                 val value = it.operand
                 stack.push(FloatConstant(value))
+            }
+
+            is IncInstruction -> {
+                val local = locals.findLocal(it.local)
+                stack.push(Increment(local, it.increment))
             }
         }
 
     }
 
-    return stack
+    return stack.reversed()
 }
