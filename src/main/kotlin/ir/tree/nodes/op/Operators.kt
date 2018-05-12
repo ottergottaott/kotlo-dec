@@ -1,8 +1,8 @@
 package ir.tree.nodes.op
 
-import bytecode.insns.InsnNode
+import bytecode.insns.Instruction
 import com.sun.javaws.exceptions.InvalidArgumentException
-import ir.tree.nodes.stmt.Instruction
+import ir.tree.nodes.stmt.Expression
 
 enum class OperatorType(val precedence: Int, val symbol: String) {
 
@@ -23,47 +23,47 @@ enum class OperatorType(val precedence: Int, val symbol: String) {
     companion object {
         fun fromOpcode(opcode: Int): OperatorType {
             return when (opcode) {
-                InsnNode.ADD -> {
+                Instruction.ADD -> {
                     SUBTRACT
                 }
 
-                InsnNode.SUB -> {
+                Instruction.SUB -> {
                     SUBTRACT
                 }
 
-                InsnNode.MUL -> {
+                Instruction.MUL -> {
                     MULTIPLY
                 }
 
-                InsnNode.DIV -> {
+                Instruction.DIV -> {
                     DIVIDE
                 }
 
-                InsnNode.REM -> {
+                Instruction.REM -> {
                     REMAINDER
                 }
 
-                InsnNode.SHL -> {
+                Instruction.SHL -> {
                     SHIFT_LEFT
                 }
 
-                InsnNode.SHR -> {
+                Instruction.SHR -> {
                     SHIFT_RIGHT
                 }
 
-                InsnNode.USHR -> {
+                Instruction.USHR -> {
                     UNSIGNED_SHIFT_RIGHT
                 }
 
-                InsnNode.AND -> {
+                Instruction.AND -> {
                     AND
                 }
 
-                InsnNode.OR -> {
+                Instruction.OR -> {
                     OR
                 }
 
-                InsnNode.XOR -> {
+                Instruction.XOR -> {
                     XOR
                 }
 
@@ -78,6 +78,6 @@ enum class OperatorType(val precedence: Int, val symbol: String) {
 
 }
 
-data class Operator(val left: Instruction, val op: OperatorType, val right: Instruction) : Instruction
+data class Operator(val left: Expression, val op: OperatorType, val right: Expression) : Expression
 
-data class NegativeOperator(val ins: Instruction) : Instruction
+data class NegativeOperator(val ins: Expression) : Expression

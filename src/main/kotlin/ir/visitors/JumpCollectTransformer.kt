@@ -1,83 +1,86 @@
 package ir.visitors
 
-import bytecode.insns.GotoInsnNode
-import bytecode.insns.InsnNode
-import bytecode.insns.JumpInsnNode
-import bytecode.insns.LabelInsnNode
+import bytecode.insns.GotoInstruction
+import bytecode.insns.Instruction
+import bytecode.insns.JumpInstruction
+import bytecode.insns.LabelInstruction
 import ir.tree.nodes.*
 
 
 import java.util.*
 
 class JumpCollectTransformer : Transformer {
-    override fun visitUndoneNode(insnList: List<InsnNode>): TreeNode {
+    override fun visitUndoneNode(insnList: List<Instruction>): TreeNode {
         // find indexes of jump or goto insns
-        var jumpInsns: MutableList<Int> = mutableListOf(0, insnList.size - 1)
+        var jumpInsnsIndices: MutableList<Int> = mutableListOf(0, insnList.size - 1)
         insnList.forEachIndexed { idx, it ->
-            if (it is JumpInsnNode) {
-                val labelIdx = insnList
-                        .subList(0, idx)
-                        .indexOfLast { it -> it is LabelInsnNode }
-                if (labelIdx >= 0) {
-                    jumpInsns.add(labelIdx)
+            when (it) {
+                is JumpInstruction -> {
+                    val labelIdx = insnList
+                            .subList(0, idx)
+                            .indexOfLast { it -> it is LabelInstruction }
+                    if (labelIdx >= 0) {
+                        jumpInsnsIndices.add(labelIdx)
+                    }
+                    jumpInsnsIndices.add(idx)
                 }
-                jumpInsns.add(idx)
-            }
 
-            if (it is GotoInsnNode) {
-                jumpInsns.add(idx)
+                is GotoInstruction -> {
+                    jumpInsnsIndices.add(idx)
 
-                // find goto label before goto
-                val gotoLabelIdx = insnList
-                        .subList(0, idx)
-                        .indexOfLast { it -> it is LabelInsnNode }
-                if (gotoLabelIdx >= 0) {
-                    if (gotoLabelIdx in jumpInsns) {
-                        jumpInsns.add(idx - 1)
-                    } else {
-                        jumpInsns.add(gotoLabelIdx)
+                    // find goto label before goto
+                    val gotoLabelIdx = insnList
+                            .subList(0, idx)
+                            .indexOfLast { it -> it is LabelInstruction }
+                    if (gotoLabelIdx >= 0) {
+                        if (gotoLabelIdx in jumpInsnsIndices) {
+                            jumpInsnsIndices.add(idx - 1)
+                        } else {
+                            jumpInsnsIndices.add(gotoLabelIdx)
+                        }
+                    }
+
+                    // find idx of target targetted by goto instruction
+                    // to break body of conditional
+                    val labelIdx = insnList.indexOfFirst { lbl ->
+                        lbl is LabelInstruction && lbl.labelNode.label == it.label.labelNode.label
+                    }
+                    if (labelIdx >= 0) {
+                        jumpInsnsIndices.add(labelIdx)
                     }
                 }
-
-                // find idx of target targetted by goto instruction
-                // to break body of conditional
-                val labelIdx = insnList.indexOfFirst { lbl ->
-                    lbl is LabelInsnNode && lbl.labelNode.label == it.label.labelNode.label
-                }
-                if (labelIdx >= 0) {
-                    jumpInsns.add(labelIdx)
-                }
             }
+
         }
 
         val result: LinkedList<TreeNode> = LinkedList()
-        jumpInsns = jumpInsns.distinct().sorted().toMutableList()
+        jumpInsnsIndices = jumpInsnsIndices.distinct().sorted().toMutableList()
 
-        loop@ for ((prev, next) in jumpInsns.zipWithNext()) {
+        loop@ for ((prev, next) in jumpInsnsIndices.zipWithNext()) {
 
             // TODO Delete this awful trick
             var prevIdx = prev
-            if (insnList[prev] is JumpInsnNode || insnList[prev] is GotoInsnNode) {
+            if (insnList[prev] is JumpInstruction || insnList[prev] is GotoInstruction) {
                 prevIdx = prev + 1
             }
 
             val nextInsn = insnList[next]
             when (nextInsn) {
-                is JumpInsnNode -> {
-                    var blockInsnList = insnList.subList(prevIdx, next + 1)
+                is JumpInstruction -> {
+                    val blockInsnList = insnList.subList(prevIdx, next + 1)
                     if (result.isNotEmpty()) {
                         val prevNode = result.peek()
                         if (prevNode is ConditionNode
                                 && prevNode.target == nextInsn.target.labelNode.label) {
-                            result.pop()
-                            blockInsnList = prevNode.insnList + blockInsnList
+                            prevNode.insnList.add(blockInsnList)
+                            continue@loop
                         }
                     }
-                    result.push(ConditionNode(blockInsnList))
+                    result.push(ConditionNode(mutableListOf(blockInsnList)))
 
                 }
-                is GotoInsnNode -> {
-                    if (insnList[prevIdx] !is LabelInsnNode) {
+                is GotoInstruction -> {
+                    if (insnList[prevIdx] !is LabelInstruction) {
                         if (prevIdx != next) {
                             result.push(UndoneNode(insnList.subList(prevIdx, next)))
                         }

@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.MethodNode
 class MethodVisitorAdapter(access: Int, name: String?,
                            desc: String?, signature: String?,
                            exceptions: Array<out String>?) : MethodNode(ASM5, access, name, desc, signature, exceptions) {
-    val myInsns: MutableList<InsnNode> = ArrayList()
+    val myInsns: MutableList<Instruction> = ArrayList()
 
     override fun visitVarInsn(opcode: Int, `var`: Int) {
         when (opcode) {
@@ -18,103 +18,103 @@ class MethodVisitorAdapter(access: Int, name: String?,
             DLOAD, ALOAD, IALOAD,
             LALOAD, FALOAD, DALOAD,
             AALOAD, BALOAD, CALOAD,
-            SALOAD -> myInsns.add(LoadInsnNode(InsnNode.LOCAL_LOAD, `var`))
+            SALOAD -> myInsns.add(LoadInstruction(Instruction.LOCAL_LOAD, `var`))
             ISTORE, LSTORE, FSTORE,
-            DSTORE, ASTORE -> myInsns.add(StoreInsnNode(InsnNode.LOCAL_STORE, `var`))
+            DSTORE, ASTORE -> myInsns.add(StoreInstruction(Instruction.LOCAL_STORE, `var`))
         }
     }
 
     override fun visitJumpInsn(opcode: Int, label: Label?) {
-        val target = LabelInsnNode(LabelNode(label))
+        val target = LabelInstruction(LabelNode(label))
 
         when (opcode) {
             GOTO -> {
-                myInsns.add(GotoInsnNode(InsnNode.GOTO, target))
+                myInsns.add(GotoInstruction(Instruction.GOTO, target))
             }
             IFEQ -> {
-                myInsns.add(JumpInsnNode(InsnNode.IFEQ, target))
+                myInsns.add(JumpInstruction(Instruction.IFEQ, target))
             }
             IFNE -> {
-                myInsns.add(JumpInsnNode(InsnNode.IFNE, target))
+                myInsns.add(JumpInstruction(Instruction.IFNE, target))
             }
             LCMP, FCMPL, FCMPG,
             DCMPL, DCMPG -> {
-                myInsns.add(JumpInsnNode(InsnNode.CMP, target))
+                myInsns.add(JumpInstruction(Instruction.CMP, target))
             }
 
             IFLE -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, 0))
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPLE, target))
+                myInsns.add(IntInstruction(Instruction.ICONST, 0))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPLE, target))
             }
 
             IFLT -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, 0))
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPLT, target))
+                myInsns.add(IntInstruction(Instruction.ICONST, 0))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPLT, target))
             }
 
             IFGT -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, 0))
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPGT, target))
+                myInsns.add(IntInstruction(Instruction.ICONST, 0))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPGT, target))
             }
 
             IFGE -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, 0))
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPGE, target))
+                myInsns.add(IntInstruction(Instruction.ICONST, 0))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPGE, target))
             }
 
             IF_ICMPNE, IF_ACMPNE -> {
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPNE, target))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPNE, target))
             }
 
             IF_ICMPEQ, IF_ACMPEQ -> {
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPEQ, target))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPEQ, target))
             }
             IF_ICMPGE -> {
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPGE, target))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPGE, target))
             }
 
             IF_ICMPGT -> {
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPGT, target))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPGT, target))
             }
 
             IF_ICMPLE -> {
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPLE, target))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPLE, target))
             }
 
             IF_ICMPLT -> {
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPLT, target))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPLT, target))
             }
 
             IFNULL -> {
-                myInsns.add(LdcInsnNode(InsnNode.PUSH, null))
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPEQ, target))
+                myInsns.add(LdcInstruction(Instruction.PUSH, null))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPEQ, target))
             }
 
             IFNONNULL -> {
-                myInsns.add(LdcInsnNode(InsnNode.PUSH, null))
-                myInsns.add(JumpInsnNode(InsnNode.IF_CMPNE, target))
+                myInsns.add(LdcInstruction(Instruction.PUSH, null))
+                myInsns.add(JumpInstruction(Instruction.IF_CMPNE, target))
             }
         }
     }
 
 
     override fun visitInvokeDynamicInsn(name: String?, desc: String?, bsm: Handle?, vararg bsmArgs: Any?) {
-        InvokeDynamicInsnNode(InsnNode.INVOKEDYNAMIC, name, desc, bsm, listOf(*bsmArgs))
+        InvokeDynamicInstruction(Instruction.INVOKEDYNAMIC, name, desc, bsm, listOf(*bsmArgs))
     }
 
     override fun visitLabel(label: Label) {
-        val target = LabelInsnNode(LabelNode(label))
+        val target = LabelInstruction(LabelNode(label))
         myInsns.add(target)
     }
 
     override fun visitMethodInsn(opcode: Int, owner: String?, name: String?, desc: String?, itf: Boolean) {
         when (opcode) {
             INVOKESPECIAL, INVOKEVIRTUAL, INVOKEINTERFACE -> {
-                myInsns.add(MethodInsnNode(InsnNode.INVOKE, owner, name, desc, itf))
+                myInsns.add(MethodInstruction(Instruction.INVOKE, owner, name, desc, itf))
             }
 
             INVOKESTATIC -> {
-                myInsns.add(MethodInsnNode(InsnNode.INVOKESTATIC, owner, name, desc, itf))
+                myInsns.add(MethodInstruction(Instruction.INVOKESTATIC, owner, name, desc, itf))
             }
         }
     }
@@ -122,150 +122,150 @@ class MethodVisitorAdapter(access: Int, name: String?,
     override fun visitInsn(opcode: Int) {
         when (opcode) {
             NOP -> {
-                myInsns.add(OpInsnNode(InsnNode.NOOP))
+                myInsns.add(OpInstruction(Instruction.NOOP))
             }
 
             POP -> {
-                myInsns.add(OpInsnNode(InsnNode.POP))
+                myInsns.add(OpInstruction(Instruction.POP))
             }
             POP2 -> {
-                myInsns.add(OpInsnNode(InsnNode.POP))
-                myInsns.add(OpInsnNode(InsnNode.POP))
+                myInsns.add(OpInstruction(Instruction.POP))
+                myInsns.add(OpInstruction(Instruction.POP))
             }
 
             DUP -> {
-                myInsns.add(OpInsnNode(InsnNode.DUP))
+                myInsns.add(OpInstruction(Instruction.DUP))
             }
 
             DUP_X1 -> {
-                myInsns.add(OpInsnNode(InsnNode.DUP_X1))
+                myInsns.add(OpInstruction(Instruction.DUP_X1))
             }
 
             DUP_X2 -> {
-                myInsns.add(OpInsnNode(InsnNode.DUP_X2))
+                myInsns.add(OpInstruction(Instruction.DUP_X2))
             }
             DUP2 -> {
-                myInsns.add(OpInsnNode(InsnNode.DUP2))
+                myInsns.add(OpInstruction(Instruction.DUP2))
             }
 
             DUP2_X1 -> {
-                myInsns.add(OpInsnNode(InsnNode.DUP2_X1))
+                myInsns.add(OpInstruction(Instruction.DUP2_X1))
 
             }
 
             DUP2_X2 -> {
-                myInsns.add(OpInsnNode(InsnNode.DUP2_X2))
+                myInsns.add(OpInstruction(Instruction.DUP2_X2))
             }
             ICONST_M1 -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, -1))
+                myInsns.add(IntInstruction(Instruction.ICONST, -1))
             }
 
             ICONST_0 -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, 0))
+                myInsns.add(IntInstruction(Instruction.ICONST, 0))
             }
             ICONST_1 -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, 1))
+                myInsns.add(IntInstruction(Instruction.ICONST, 1))
             }
             ICONST_2 -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, 2))
+                myInsns.add(IntInstruction(Instruction.ICONST, 2))
             }
             ICONST_3 -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, 3))
+                myInsns.add(IntInstruction(Instruction.ICONST, 3))
             }
             ICONST_4 -> {
-                myInsns.add(IntInsnNode(InsnNode.ICONST, 4))
+                myInsns.add(IntInstruction(Instruction.ICONST, 4))
             }
 
             ICONST_5 -> {
-                myInsns.add(LongInsnNode(InsnNode.ICONST, 5))
+                myInsns.add(LongInstruction(Instruction.ICONST, 5))
             }
             LCONST_0 -> {
-                myInsns.add(LongInsnNode(InsnNode.LCONST, 0))
+                myInsns.add(LongInstruction(Instruction.LCONST, 0))
             }
             LCONST_1 -> {
-                myInsns.add(LongInsnNode(InsnNode.LCONST, 1))
+                myInsns.add(LongInstruction(Instruction.LCONST, 1))
             }
             FCONST_0 -> {
-                myInsns.add(FloatInsnNode(InsnNode.FCONST, 0f))
+                myInsns.add(FloatInstruction(Instruction.FCONST, 0f))
             }
 
             FCONST_1 -> {
-                myInsns.add(FloatInsnNode(InsnNode.FCONST, 1f))
+                myInsns.add(FloatInstruction(Instruction.FCONST, 1f))
             }
             FCONST_2 -> {
-                myInsns.add(FloatInsnNode(InsnNode.FCONST, 2f))
+                myInsns.add(FloatInstruction(Instruction.FCONST, 2f))
             }
 
             DCONST_0 -> {
-                myInsns.add(DoubleInsnNode(InsnNode.DCONST, 0.0))
+                myInsns.add(DoubleInstruction(Instruction.DCONST, 0.0))
             }
 
             DCONST_1 -> {
-                myInsns.add(DoubleInsnNode(InsnNode.DCONST, 1.0))
+                myInsns.add(DoubleInstruction(Instruction.DCONST, 1.0))
             }
 
             IADD, LADD, FADD, DADD -> {
-                myInsns.add(OpInsnNode(InsnNode.ADD))
+                myInsns.add(OpInstruction(Instruction.ADD))
             }
 
             ISUB, LSUB, FSUB, DSUB -> {
-                myInsns.add(OpInsnNode(InsnNode.SUB))
+                myInsns.add(OpInstruction(Instruction.SUB))
             }
 
             IMUL, LMUL, FMUL, DMUL -> {
-                myInsns.add(OpInsnNode(InsnNode.MUL))
+                myInsns.add(OpInstruction(Instruction.MUL))
             }
             IDIV, LDIV, FDIV, DDIV -> {
-                myInsns.add(OpInsnNode(InsnNode.DIV))
+                myInsns.add(OpInstruction(Instruction.DIV))
             }
 
             IREM, LREM, FREM, DREM -> {
-                myInsns.add(OpInsnNode(InsnNode.REM))
+                myInsns.add(OpInstruction(Instruction.REM))
             }
 
             INEG, LNEG, FNEG, DNEG -> {
-                myInsns.add(OpInsnNode(InsnNode.NEG))
+                myInsns.add(OpInstruction(Instruction.NEG))
             }
             ISHL, LSHL -> {
-                myInsns.add(OpInsnNode(InsnNode.SHL))
+                myInsns.add(OpInstruction(Instruction.SHL))
             }
             ISHR, LSHR -> {
-                myInsns.add(OpInsnNode(InsnNode.SHR))
+                myInsns.add(OpInstruction(Instruction.SHR))
             }
             IUSHR, LUSHR -> {
-                myInsns.add(OpInsnNode(InsnNode.USHR))
+                myInsns.add(OpInstruction(Instruction.USHR))
             }
             IAND, LAND -> {
-                myInsns.add(OpInsnNode(InsnNode.AND))
+                myInsns.add(OpInstruction(Instruction.AND))
             }
             IOR, LOR -> {
-                myInsns.add(OpInsnNode(InsnNode.OR))
+                myInsns.add(OpInstruction(Instruction.OR))
             }
             IXOR, LXOR -> {
-                myInsns.add(OpInsnNode(InsnNode.XOR))
+                myInsns.add(OpInstruction(Instruction.XOR))
             }
             IRETURN, LRETURN, FRETURN,
             DRETURN, ARETURN -> {
-                myInsns.add(OpInsnNode(InsnNode.ARETURN))
+                myInsns.add(OpInstruction(Instruction.ARETURN))
             }
 
             SWAP -> {
-                myInsns.add(OpInsnNode(InsnNode.SWAP))
+                myInsns.add(OpInstruction(Instruction.SWAP))
             }
 
             RETURN -> {
-                myInsns.add(OpInsnNode(InsnNode.RETURN))
+                myInsns.add(OpInstruction(Instruction.RETURN))
             }
         }
     }
 
     override fun visitLdcInsn(cst: Any?) {
-        myInsns.add(LdcInsnNode(InsnNode.PUSH, cst))
+        myInsns.add(LdcInstruction(Instruction.PUSH, cst))
     }
 
     override fun visitIntInsn(opcode: Int, operand: Int) {
         when (opcode) {
-            BIPUSH, SIPUSH -> myInsns.add(IntInsnNode(InsnNode.ICONST, operand))
+            BIPUSH, SIPUSH -> myInsns.add(IntInstruction(Instruction.ICONST, operand))
         // TODO NEWARRAY
         }
     }
@@ -276,7 +276,9 @@ class MethodVisitorAdapter(access: Int, name: String?,
     }
 
     override fun visitIincInsn(`var`: Int, increment: Int) {
-        super.visitIincInsn(`var`, increment)
+        myInsns.add(IncInstruction(Instruction.IINC, `var`, increment))
     }
+
+
 
 }

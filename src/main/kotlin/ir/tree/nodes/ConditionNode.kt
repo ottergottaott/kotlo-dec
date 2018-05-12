@@ -1,23 +1,26 @@
 package ir.tree.nodes
 
-import bytecode.insns.InsnNode
-import bytecode.insns.JumpInsnNode
-import bytecode.insns.LabelInsnNode
+import bytecode.insns.Instruction
+import bytecode.insns.JumpInstruction
+import bytecode.insns.LabelInstruction
 import ir.visitors.Transformer
 import org.objectweb.asm.Label
 
-class ConditionNode(val insnList: List<InsnNode>) : TreeNode {
+typealias OpcodeList = List<Instruction>
+
+class ConditionNode(val insnList: MutableList<OpcodeList>) : TreeNode {
     // last instruction in condition node is always
     // jump instruction with target
-    val target = (insnList.last() as JumpInsnNode).target.labelNode.label
+    // TODO remove last last
+    val target = (insnList.last().last() as JumpInstruction).target.labelNode.label
 
     override fun transform(transformer: Transformer): TreeNode {
         return transformer.visitConditionNode(insnList)
     }
 
     override fun label(): Label {
-        if (insnList.isNotEmpty() && insnList[0] is LabelInsnNode) {
-            return (insnList[0] as LabelInsnNode).labelNode.label
+        if (insnList.isNotEmpty() && insnList[0][0] is LabelInstruction) {
+            return (insnList[0][0] as LabelInstruction).labelNode.label
         }
 
         return Label()

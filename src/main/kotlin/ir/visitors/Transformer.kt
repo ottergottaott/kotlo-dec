@@ -1,6 +1,6 @@
 package ir.visitors
 
-import bytecode.insns.InsnNode
+import bytecode.insns.Instruction
 import ir.tree.nodes.*
 import java.util.*
 
@@ -15,7 +15,7 @@ interface Transformer {
         return IfNode(newCondition, newBody, newElseIfs, newElseBody)
     }
 
-    fun visitUndoneNode(insnList: List<InsnNode>): TreeNode {
+    fun visitUndoneNode(insnList: List<Instruction>): TreeNode {
         return UndoneNode(insnList)
     }
 
@@ -29,7 +29,7 @@ interface Transformer {
         return SequenceNode(newNodes)
     }
 
-    fun visitConditionNode(insnList: List<InsnNode>): TreeNode {
+    fun visitConditionNode(insnList: MutableList<OpcodeList>): TreeNode {
         return ConditionNode(insnList)
     }
 

@@ -1,10 +1,10 @@
 package ir.tree
 
-import bytecode.insns.InsnNode
-import ir.visitors.Transformer
+import bytecode.insns.Instruction
 import ir.tree.nodes.SequenceNode
 import ir.tree.nodes.TreeNode
 import ir.tree.nodes.UndoneNode
+import ir.visitors.Transformer
 
 
 class IRTree {
@@ -16,7 +16,7 @@ class IRTree {
         this.name = name
     }
 
-    constructor(insnList: List<InsnNode>, name: String) {
+    constructor(insnList: List<Instruction>, name: String) {
         root = SequenceNode(listOf(UndoneNode(insnList)))
         this.name = name
     }
