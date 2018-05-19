@@ -1,16 +1,11 @@
 package ast.tree.nodes
 
-import ast.visitors.Transformer
-import org.objectweb.asm.Label
+import ast.visitors.VisitorInterface
 
-class WhileNode(val condition: TreeNode,
-                val body: TreeNode) : TreeNode {
+class WhileNode(val condition: IRNode,
+                val body: IRNode) : IRNode {
 
-    override fun transform(transformer: Transformer): TreeNode {
-        return transformer.visitWhileNode(condition, body)
-    }
-
-    override fun label(): Label {
-        return condition.label()
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitWhileNode(condition, body)
     }
 }

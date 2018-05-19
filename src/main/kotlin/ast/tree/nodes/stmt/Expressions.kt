@@ -1,21 +1,69 @@
 package ast.tree.nodes.stmt
 
+import ast.tree.nodes.IRNode
 import ast.tree.nodes.Locals
+import ast.visitors.VisitorInterface
 
-interface Expression
+//import ast.tree.nodes.IRNode
 
-data class AssignmentLocal(val lvalue: Locals.Local, val rvalue: Expression) : Expression
+interface Expression : IRNode
 
-data class DoubleConstant(val value: Double) : Expression
+class AssignmentLocal(val lvalue: Locals.Local, val rvalue: Expression) : Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitAssignmentLocal(lvalue, rvalue)
+    }
+}
 
-data class FloatConstant(val value: Float) : Expression
+class DoubleConstant(val value: Double) : Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitDoubleConstant(value)
+    }
+}
 
-data class IntConstant(val value: Int) : Expression
+class FloatConstant(val value: Float) : Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitFloatConstant(value)
+    }
+}
 
-data class LocalAccess(val localRef: Locals.Local) : Expression
+class IntConstant(val value: Int) : Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitIntConstant(value)
+    }
+}
 
-data class ObjConstant(val value: Any?) : Expression
+class LongConstant(val value: Long): Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitLongConstant(value)
+    }
+}
 
-data class NumberCompare(val left: Expression, val right: Expression) : Expression
+class LocalAccess(val localRef: Locals.Local) : Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitLocalAccess(localRef)
+    }
+}
 
-data class Increment(val local: Locals.Local, val value: Int) : Expression
+class ObjConstant(val value: Any?) : Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitObjConstant(value)
+    }
+}
+
+class NumberCompare(val left: Expression, val right: Expression) : Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitNumberCompare(left, right)
+    }
+}
+
+class Increment(val local: Locals.Local, val value: Int) : Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitIncrement(local, value)
+    }
+}
+
+class Return(val op: Expression) : Expression {
+    override fun <T> accept(visitor: VisitorInterface<T>): T {
+        return visitor.visitReturn(op)
+    }
+}

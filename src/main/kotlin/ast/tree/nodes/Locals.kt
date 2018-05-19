@@ -16,13 +16,15 @@ class Locals {
     constructor(localVariables: List<LocalVariableNode>) {
         instances = ArrayList()
         localVariables.forEach{
-                it -> instances.add(Local(it.name, it.desc))
+                it -> instances.add(Local(it.name, it.desc, it.index))
         }
     }
 
-    class Local(val name: String, val desc: String)
+    data class Local(val name: String, val desc: String, val idx: Int)
 
     fun findLocal(idx: Int): Local {
-        return instances[idx]
+        return instances.find { it.idx == idx }!!
     }
+
+
 }
