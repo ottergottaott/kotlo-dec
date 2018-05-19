@@ -1,10 +1,10 @@
-import ast.tree.nodes.Locals
-import builders.buildIrFromRegions
 import bytecode.asm.adapters.ClassVisitorAdapter
 import bytecode.insns.Instruction
-import ir.collectors.collectIfWhileRegion
-import ir.collectors.collectJumps
-import ir.collectors.splitToBasicBlocksByLabel
+import ir.builders.buildIrFromRegions
+import ir.tree.nodes.Locals
+import low.collectors.collectIfWhileRegion
+import low.collectors.collectJumps
+import low.collectors.splitToBasicBlocksByLabel
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.LocalVariableNode
 import java.io.FileInputStream

@@ -1,11 +1,11 @@
-package builders
+package ir.builders
 
-import ast.tree.nodes.Locals
-import ast.tree.nodes.op.BinaryOp
-import ast.tree.nodes.op.OperatorType
-import ast.tree.nodes.stmt.Expression
 import bytecode.insns.JumpInstruction
-import ir.regions.JumpRegion
+import ir.tree.nodes.Locals
+import ir.tree.nodes.op.BinaryOp
+import ir.tree.nodes.op.Expression
+import ir.tree.nodes.op.OperatorType
+import low.regions.JumpRegion
 import java.util.*
 
 

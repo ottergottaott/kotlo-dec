@@ -1,6 +1,6 @@
-package ir.collectors
+package low.collectors
 
-import ir.regions.*
+import low.regions.*
 import kotlin.math.max
 
 

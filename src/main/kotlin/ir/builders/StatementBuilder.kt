@@ -1,12 +1,9 @@
-package builders
+package ir.builders
 
-import ast.tree.nodes.IRNode
-import ast.tree.nodes.Locals
-import ast.tree.nodes.op.BinaryOp
-import ast.tree.nodes.op.NegativeOp
-import ast.tree.nodes.op.OperatorType
-import ast.tree.nodes.stmt.*
 import bytecode.insns.*
+import ir.tree.nodes.IRNode
+import ir.tree.nodes.Locals
+import ir.tree.nodes.op.*
 import java.util.*
 
 fun buildStatement(insnList: List<Instruction>, locals: Locals, stack: Deque<Expression>): List<IRNode> {

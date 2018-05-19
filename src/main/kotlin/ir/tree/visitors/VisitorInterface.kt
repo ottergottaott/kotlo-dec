@@ -1,9 +1,9 @@
-package ast.visitors
+package ir.tree.visitors
 
-import ast.tree.nodes.IRNode
-import ast.tree.nodes.Locals
-import ast.tree.nodes.op.OperatorType
-import ast.tree.nodes.stmt.Expression
+import ir.tree.nodes.IRNode
+import ir.tree.nodes.Locals
+import ir.tree.nodes.op.Expression
+import ir.tree.nodes.op.OperatorType
 
 interface VisitorInterface<out T> {
     fun visitIfNode(condition: IRNode, body: IRNode, elseBody: IRNode): T

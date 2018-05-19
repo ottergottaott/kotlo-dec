@@ -1,4 +1,4 @@
-package ir.regions
+package low.regions
 
 import bytecode.insns.GotoInstruction
 import bytecode.insns.Instruction

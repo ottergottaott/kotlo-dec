@@ -1,13 +1,13 @@
-package ir.collectors
+package low.collectors
 
 import bytecode.insns.GotoInstruction
 import bytecode.insns.Instruction
 import bytecode.insns.JumpInstruction
 import bytecode.insns.LabelInstruction
-import ir.regions.GotoRegion
-import ir.regions.JumpRegion
-import ir.regions.RawRegion
-import ir.regions.Region
+import low.regions.GotoRegion
+import low.regions.JumpRegion
+import low.regions.RawRegion
+import low.regions.Region
 import java.util.*
 
 

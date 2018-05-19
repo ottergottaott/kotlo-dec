@@ -1,6 +1,6 @@
-package ast.tree.nodes
+package ir.tree.nodes
 
-import ast.visitors.VisitorInterface
+import ir.tree.visitors.VisitorInterface
 
 
 class BasicBlock(val nodes: List<IRNode>) : IRNode {

@@ -1,6 +1,6 @@
-package ast.tree.nodes
+package ir.tree.nodes
 
-import ast.visitors.VisitorInterface
+import ir.tree.visitors.VisitorInterface
 
 class IfNode(val condition: IRNode, val body: IRNode,
              val elseBody: IRNode) : IRNode {

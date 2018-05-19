@@ -1,7 +1,6 @@
-package ast.tree.nodes.op
+package ir.tree.nodes.op
 
-import ast.tree.nodes.stmt.Expression
-import ast.visitors.VisitorInterface
+import ir.tree.visitors.VisitorInterface
 
 
 class BinaryOp(val left: Expression, val op: OperatorType,

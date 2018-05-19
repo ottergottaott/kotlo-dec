@@ -1,8 +1,8 @@
-package ast.tree.nodes.stmt
+package ir.tree.nodes.op
 
-import ast.tree.nodes.IRNode
-import ast.tree.nodes.Locals
-import ast.visitors.VisitorInterface
+import ir.tree.nodes.IRNode
+import ir.tree.nodes.Locals
+import ir.tree.visitors.VisitorInterface
 
 //import ast.tree.nodes.IRNode
 

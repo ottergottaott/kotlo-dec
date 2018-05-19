@@ -1,4 +1,4 @@
-package ast.tree.nodes.op
+package ir.tree.nodes.op
 
 import bytecode.insns.Instruction
 

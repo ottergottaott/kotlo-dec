@@ -1,8 +1,8 @@
-import ast.tree.nodes.IRNode
-import ast.tree.nodes.Locals
-import ast.tree.nodes.op.OperatorType
-import ast.tree.nodes.stmt.Expression
-import ast.visitors.VisitorInterface
+import ir.tree.nodes.IRNode
+import ir.tree.nodes.Locals
+import ir.tree.nodes.op.Expression
+import ir.tree.nodes.op.OperatorType
+import ir.tree.visitors.VisitorInterface
 
 class BaseVisitor : VisitorInterface<String> {
 
