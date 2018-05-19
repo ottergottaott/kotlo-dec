@@ -19,6 +19,7 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+//        compile group: 'org.ow2.asm', name: 'asm', version: '6.1'
     }
 }
 
@@ -26,7 +27,7 @@ buildscript {
 repositories {
     // Use jcenter for resolving your dependencies.
     // You can declare any Maven/Ivy/file repository here.
-    jcenter()
+    mavenCentral()
 }
 
 dependencies {
@@ -38,7 +39,13 @@ dependencies {
 
     // Use JUnit test framework
     testImplementation 'junit:junit:4.12'
+
+    // https://mvnrepository.com/artifact/org.ow2.asm/asm-all
+    compile group: 'org.ow2.asm', name: 'asm-all', version: '5.2'
+
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+
 }
 compileKotlin {
     kotlinOptions {

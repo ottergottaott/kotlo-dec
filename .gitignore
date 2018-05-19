@@ -91,3 +91,13 @@ gradle-app.setting
 
 # OS X stuff
 .DS_store
+
+.idea/statistic.xml
+.idea/codeStyles
+
+!src/main/kotlin/samples/ifs/SimpleIf.kt
+
+src/main/java/opcodes
+src/main/kotlin/samples
+src/main/kotlin/debug
+
