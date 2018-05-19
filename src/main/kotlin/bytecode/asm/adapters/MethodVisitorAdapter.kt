@@ -246,7 +246,7 @@ class MethodVisitorAdapter(access: Int, name: String?,
             }
             IRETURN, LRETURN, FRETURN,
             DRETURN, ARETURN -> {
-                myInsns.add(OpInstruction(Instruction.ARETURN))
+                myInsns.add(OpInstruction(Instruction.RETURN))
             }
 
             SWAP -> {
@@ -254,7 +254,7 @@ class MethodVisitorAdapter(access: Int, name: String?,
             }
 
             RETURN -> {
-                myInsns.add(OpInstruction(Instruction.RETURN))
+//                myInsns.add(OpInstruction(Instruction.RETURN))
             }
         }
     }

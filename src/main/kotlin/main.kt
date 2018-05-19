@@ -1,44 +1,34 @@
-import builders.buildStatement
+import ast.tree.nodes.Locals
+import builders.buildIrFromRegions
 import bytecode.asm.adapters.ClassVisitorAdapter
-import ir.tree.IRTree
-import ir.tree.nodes.Locals
-import ir.tree.nodes.SequenceNode
-import ir.tree.nodes.UndoneNode
-import ir.tree.nodes.WhileNode
-import ir.tree.nodes.stmt.Instruction
-import ir.visitors.IfWhileCollectTransformer
-import ir.visitors.JumpCollectTransformer
+import bytecode.insns.Instruction
+import ir.collectors.collectIfWhileRegion
+import ir.collectors.collectJumps
+import ir.collectors.splitToBasicBlocksByLabel
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.tree.LocalVariableNode
 import java.io.FileInputStream
 import java.util.*
 
-fun decompileMethod(method: IRTree, locals: List<LocalVariableNode>): Deque<Instruction> {
+fun decompileMethod(name: String, insnList: List<Instruction>, locals: Locals) {
 
-    println("End of method \n \n")
-
-    println("Method: ${method.name}")
-    val newMethodTree = method.transform(JumpCollectTransformer())
-            .transform(IfWhileCollectTransformer())
-
-    val blockToTest = (((newMethodTree.root as SequenceNode).nodes[0] as SequenceNode).nodes[1] as WhileNode)
-    val res = buildStatement((blockToTest.body as SequenceNode).nodes[1] as UndoneNode, Locals(locals), LinkedList())
-
-    return res
+    println("Method $name")
+    var res = splitToBasicBlocksByLabel(insnList)
+    res = collectJumps(res)
+    res = collectIfWhileRegion(res)
+    val tree = buildIrFromRegions(res, locals, LinkedList())
+    println(tree.accept(BaseVisitor()))
 }
 
 fun main(args: Array<String>) {
-    val fileInputStream = FileInputStream("build/classes/kotlin/main/samples/whiles/WhileKt.class")
+    val fileInputStream = FileInputStream("build/classes/kotlin/main/samples/ifs/SimpleIfKt.class")
     val classReader = ClassReader(fileInputStream)
 
     val cw = ClassVisitorAdapter()
     classReader.accept(cw, 0)
 
-    val curMethod = cw.methodNodes[2]
-    val methodTree = IRTree(curMethod.myInsns, curMethod.name)
-
-    val locals = curMethod.localVariables.map { it as LocalVariableNode }
-    val res = decompileMethod(methodTree, locals)
-
-    println("-------------------------")
+    for (met in cw.methodNodes) {
+        val locals = met.localVariables.map { it as LocalVariableNode }
+        val res = decompileMethod(met.name, met.myInsns, Locals(locals))
+    }
 }
