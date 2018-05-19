@@ -1,21 +1,22 @@
 package builders
 
+import ast.tree.nodes.IRNode
 import ast.tree.nodes.Locals
-import ast.tree.nodes.OpcodeList
-import ast.tree.nodes.op.NegativeOperator
-import ast.tree.nodes.op.Operator
+import ast.tree.nodes.op.BinaryOp
+import ast.tree.nodes.op.NegativeOp
 import ast.tree.nodes.op.OperatorType
 import ast.tree.nodes.stmt.*
 import bytecode.insns.*
 import java.util.*
 
-fun buildStatement(insnList: OpcodeList, locals: Locals, stack: LinkedList<Expression>): List<Expression> {
+fun buildStatement(insnList: List<Instruction>, locals: Locals, stack: Deque<Expression>): List<IRNode> {
 
     insnList.forEach { it ->
 
         // OpNode
         when (it.opcode) {
-            Instruction.NOOP, Instruction.LABEL -> {}
+            Instruction.NOOP, Instruction.LABEL -> {
+            }
 
             Instruction.POP -> {
                 stack.pop()
@@ -23,7 +24,7 @@ fun buildStatement(insnList: OpcodeList, locals: Locals, stack: LinkedList<Expre
 
             Instruction.NEG -> {
                 val expr = stack.pop()
-                stack.push(NegativeOperator(expr))
+                stack.push(NegativeOp(expr))
             }
 
             Instruction.CMP -> {
@@ -38,7 +39,7 @@ fun buildStatement(insnList: OpcodeList, locals: Locals, stack: LinkedList<Expre
             Instruction.OR, Instruction.XOR -> {
                 val right = stack.pop()
                 val left = stack.pop()
-                stack.push(Operator(left, OperatorType.fromOpcode(it.opcode), right))
+                stack.push(BinaryOp(left, OperatorType.fromOpcode(it.opcode), right))
             }
 
             Instruction.DUP -> {
@@ -91,9 +92,15 @@ fun buildStatement(insnList: OpcodeList, locals: Locals, stack: LinkedList<Expre
                 stack.push(v1)
             }
 
+
+            Instruction.RETURN -> {
+                val v = stack.pop()
+                stack.push(Return(v))
+            }
+
         }
 
-        when(it) {
+        when (it) {
             is LoadInstruction -> {
                 val local = locals.findLocal(it.local)
                 stack.push(LocalAccess(local))
@@ -116,6 +123,12 @@ fun buildStatement(insnList: OpcodeList, locals: Locals, stack: LinkedList<Expre
                 stack.push(IntConstant(value))
             }
 
+            is LongInstruction -> {
+                val value = it.operand
+                stack.push(LongConstant(value))
+            }
+
+
             is DoubleInstruction -> {
                 val value = it.operand
                 stack.push(DoubleConstant(value))
@@ -129,6 +142,11 @@ fun buildStatement(insnList: OpcodeList, locals: Locals, stack: LinkedList<Expre
             is IncInstruction -> {
                 val local = locals.findLocal(it.local)
                 stack.push(Increment(local, it.increment))
+            }
+
+
+            is MethodInstruction -> {
+                TODO("method instruction in statement builder")
             }
         }
 
